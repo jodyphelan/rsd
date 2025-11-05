@@ -127,7 +127,6 @@ def entrypoint():
         '--read1',
         '-1',
         help='First read file',
-        required=True,
         type=file
     )
     input.add_argument(
@@ -141,7 +140,6 @@ def entrypoint():
         '--bam',
         '-a',
         help='BAM/CRAM file',
-        required=False,
         type=file
     )
     input.add_argument(
