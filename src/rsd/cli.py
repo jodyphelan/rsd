@@ -29,7 +29,7 @@ def cli_main(args):
     else:
         bam_obj = pp.Bam(
             bam_file=args.bam,
-            sample_name=args.sample_name,
+            prefix=args.sample_name,
             platform=args.platform
         )
 
