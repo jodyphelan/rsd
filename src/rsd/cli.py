@@ -12,19 +12,26 @@ def cli_main(args):
         'dp_hard': args.min_depth,
     }
 
-    fastq_obj = pp.Fastq(
-        r1=args.read1,
-        r2=args.read2,
-    )
+    if args.read1:
+        fastq_obj = pp.Fastq(
+            r1=args.read1,
+            r2=args.read2,
+        )
 
-    bam_obj = fastq_obj.map_to_ref(
-        ref_file=args.ref,
-        prefix=args.sample_name,
-        sample_name=args.sample_name,
-        aligner=args.mapper,
-        platform=args.platform,
-        threads=args.threads
-    )
+        bam_obj = fastq_obj.map_to_ref(
+            ref_file=args.ref,
+            prefix=args.sample_name,
+            sample_name=args.sample_name,
+            aligner=args.mapper,
+            platform=args.platform,
+            threads=args.threads
+        )
+    else:
+        bam_obj = pp.Bam(
+            bam_file=args.bam,
+            sample_name=args.sample_name,
+            platform=args.platform
+        )
 
     vcf_obj = bam_obj.call_variants(
         ref_file = args.ref,
@@ -96,6 +103,14 @@ def file(path: str) -> str:
         raise argparse.ArgumentTypeError(f"File {path} does not exist.")
 
 def entrypoint():
+
+    base_parser = argparse.ArgumentParser(add_help=False)
+    base_parser.add_argument(
+        '--debug',
+        action='store_true',
+        help='Enable verbose output'
+    )
+
     parser = argparse.ArgumentParser(
         description="RSD: A Python library for Real-time SNP Distance estimation."
     )
@@ -104,10 +119,11 @@ def entrypoint():
 
     ### Add insert subparser ###
 
-    subparser_insert = subparsers.add_parser("insert", help="Insert sample into SNP database.")
+    subparser_insert = subparsers.add_parser("insert", parents=[base_parser], help="Insert sample into SNP database.")
     input = subparser_insert.add_argument_group("Input/Output Options")
     # add mutually exclusive group for input
-    input.add_argument(
+    group = input.add_mutually_exclusive_group(required=True)
+    group.add_argument(
         '--read1',
         '-1',
         help='First read file',
@@ -119,6 +135,13 @@ def entrypoint():
         '-2',
         help='Second read file',
         required=True,
+        type=file
+    )
+    group.add_argument(
+        '--bam',
+        '-a',
+        help='BAM/CRAM file',
+        required=False,
         type=file
     )
     input.add_argument(
@@ -211,7 +234,7 @@ def entrypoint():
     ### End insert subparser ###
 
     ### Add extract subparser ###
-    subparser_matrix = subparsers.add_parser("matrix", help="Extract SNP distance matrix from database.")
+    subparser_matrix = subparsers.add_parser("matrix", parents=[base_parser], help="Extract SNP distance matrix from database.")
     subparser_matrix.add_argument(
         '--input-db',
         '-i',
@@ -229,7 +252,7 @@ def entrypoint():
     ### End extract subparser ###
 
     ### Add link subparser ###
-    link_subparser = subparsers.add_parser("link", help="Link samples in SNP database.")
+    link_subparser = subparsers.add_parser("link", parents=[base_parser], help="Link samples in SNP database.")
     link_subparser.add_argument(
         '--input-db',
         '-i',
