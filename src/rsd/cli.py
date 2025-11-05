@@ -133,7 +133,6 @@ def entrypoint():
         '--read2',
         '-2',
         help='Second read file',
-        required=True,
         type=file
     )
     group.add_argument(
