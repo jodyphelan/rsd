@@ -152,7 +152,7 @@ def entrypoint():
         '--output-db',
         '-o',
         help='Output file',
-        required=True
+        default='rsd.db'
     )
     input.add_argument(
         '--sample-name',
@@ -181,6 +181,7 @@ def entrypoint():
         default=None
     )
     filtering.add_argument(
+        '-d',
         '--snp-distance-cutoff',
         help='SNP distance cutoff for database storage',
         type=int,
@@ -236,7 +237,7 @@ def entrypoint():
         '--input-db',
         '-i',
         help='Input SNP database file',
-        required=True
+        default='rsd.db'
     )
     subparser_matrix.add_argument(
         '--output-matrix',
@@ -254,7 +255,7 @@ def entrypoint():
         '--input-db',
         '-i',
         help='Input SNP database file',
-        required=True
+        default='rsd.db'
     )
     link_subparser.add_argument(
         '--source',
