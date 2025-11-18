@@ -70,6 +70,7 @@ def cli_main(args):
 
     snp_db = pp.SnpDistDB(args.output_db)
 
+    logging.debug(f"Storing sample {args.sample_name} into database {args.output_db}.")
     snp_db.store(
         sample_name=args.sample_name,
         vcf_file=consensus_vcf_filename,
@@ -285,6 +286,9 @@ def entrypoint():
 
     args = parser.parse_args()
 
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+        logging.debug("Debug mode enabled.")
     if hasattr(args, "func"):
         args.func(args)
     else:
