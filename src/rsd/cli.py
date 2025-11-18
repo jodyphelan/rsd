@@ -73,7 +73,7 @@ def cli_main(args):
     snp_db.store(
         sample_name=args.sample_name,
         vcf_file=consensus_vcf_filename,
-        taxa="bacteria",
+        taxa=args.taxon if args.taxon else args.ref,
         cutoff=args.snp_distance_cutoff
     )
 
@@ -159,6 +159,12 @@ def entrypoint():
         '-s',
         help='Sample name/prefix',
         required=True
+    )
+    input.add_argument(
+        '--taxon',
+        '-x',
+        help='Taxon name for the sample',
+        default=None
     )
 
     filtering = subparser_insert.add_argument_group("Filtering Options")
